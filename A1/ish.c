@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 500
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -8,6 +10,8 @@
 #include <pwd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+void sigFunction(int sig);
 
 int getInput(char* str) {
     char inputString[64];
@@ -26,6 +30,7 @@ int shouldRunInBackground(char** commandArgs) {
   int i = 0;
   while(commandArgs[i] != NULL) {
     if (strcmp(commandArgs[i], "&") == 0) {
+      commandArgs[i] = NULL;
       return 1;
     }
     i++;
@@ -148,18 +153,17 @@ void executeCommand(char** commandArgs) {
     }
   } else {
     pid = fork();
+    if (runInBackground == 1) {
+      sigset(pid, sigFunction);
+    }
     if (pid == -1) {
       printf("ERROR: forking failed\n");
       exit(1);
     } else if (pid == 0) {
-      if (runInBackground == 0) {
-        execvp(commandArgs[0], commandArgs);
-      }
+      execvp(commandArgs[0], commandArgs);
     } else {
       if (runInBackground == 1) {
         printf("background job created: %d\n", pid);
-        execvp(commandArgs[0], commandArgs);
-        //wait(&status);
       } else {
         wait(&status);
       }
@@ -177,13 +181,22 @@ void shellPrompt() {
   char hostName[1024];
   gethostname(hostName, sizeof(hostName));
 
-  printf("%s@%s:~%s$", passwd->pw_name, hostName, currentWorkingDir);
+  char userType;
+  if (strcmp(passwd->pw_name, "root")) {
+    userType = '$';
+  } else {
+    userType = '#';
+  }
+  printf("%s@%s:~%s%c", passwd->pw_name, hostName, currentWorkingDir, userType);
 }
 
 int main() {
   //Setup
   char inputString[64];
   char *commandArgs[10];
+  int i = 0;
+  //Welcome Message
+  printf("\nWelcome to Greg's Shell\n\n");
 
   while (1) {
     /* Shell Prompt */
@@ -229,11 +242,16 @@ int main() {
       }
     }
 
-    for(int i = 0; i < numOfArgs; i++) {
+    for(i = 0; i < numOfArgs; i++) {
       free(commandArgs[i]);
     }
 
   }
 
   return 0;
+}
+
+void sigFunction(int sig) {
+  int status;
+  wait(&status);
 }

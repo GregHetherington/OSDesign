@@ -9,12 +9,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-const char *mypath[] = {
-  "./",
-  "/usr/bin/",
-  "/bin/"
-};
-
 int getInput(char* str) {
     char inputString[64];
 

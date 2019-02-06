@@ -50,17 +50,17 @@ char * shouldOutputRedirect(char** commandArgs) {
   return NULL;
 }
 
-int shouldInputRedirect(char** commandArgs) {
+char * shouldInputRedirect(char** commandArgs) {
   int i = 0;
   while(commandArgs[i] != NULL) {
     if (strcmp(commandArgs[i], "<") == 0) {
       commandArgs[i] = commandArgs[i + 1];
       commandArgs[i + 1] = NULL;
-      return 1;
+      return commandArgs[i];
     }
     i++;
   }
-  return 0;
+  return NULL;
 }
 
 void executeCommand(char** commandArgs) {
@@ -221,9 +221,9 @@ int main() {
     /* Run Command */
     if (numOfArgs > 0) {
       char * redirectLocation = shouldOutputRedirect(commandArgs);
-      int inputRedirect = shouldInputRedirect(commandArgs);
+      char * inputRedirect = shouldInputRedirect(commandArgs);
 
-      if (redirectLocation != NULL && inputRedirect == 0) {
+      if (redirectLocation != NULL && inputRedirect == NULL) {
         int pid, status;
         if ((pid = fork()) == -1) {
           printf("ERROR: forking failed\n");
@@ -235,8 +235,20 @@ int main() {
         } else {
           wait(&status);
         }
-      } else if (redirectLocation != NULL && inputRedirect == 1) {
+      } else if (redirectLocation != NULL && inputRedirect != NULL) {
         printf("Bad Command: use one of < or >\n");
+      } else if (redirectLocation == NULL && inputRedirect != NULL) {
+        int pid, status;
+        if ((pid = fork()) == -1) {
+          printf("ERROR: forking failed\n");
+          exit(1);
+        } else if (pid == 0) {
+          freopen(inputRedirect, "r", stdin);
+          executeCommand(commandArgs);
+          exit(0);
+        } else {
+          wait(&status);
+        }
       } else {
         executeCommand(commandArgs);
       }

@@ -178,7 +178,8 @@ char* shouldInputRedirect(char** commandArgs) {
   while(commandArgs[i] != NULL) {
     if (strcmp(commandArgs[i], "<") == 0) {
       commandArgs[i] = commandArgs[i + 1];
-      commandArgs[i + 1] = NULL;
+      commandArgs[i + 1] = commandArgs[i + 2];
+      commandArgs[i + 2] = NULL;
       return commandArgs[i];
     }
     i++;
@@ -254,11 +255,12 @@ void executeCommand(char** commandArgs) {
     printf("argc = %d, args = ", argCounter);
     for (i = 1; commandArgs[i] != NULL; i++) {
       if (i == argCounter) {
-        printf("%s\n", commandArgs[i]);
+        printf("%s", commandArgs[i]);
       } else {
         printf("%s, ", commandArgs[i]);
       }
     }
+    printf("\n");
 
   } else if (selectedCmd == 3) {
     if (commandArgs[1] != NULL && commandArgs[2] != NULL) {

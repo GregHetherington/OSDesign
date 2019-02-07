@@ -1,0 +1,37 @@
+**************************************
+Information
+**************************************
+Assignment 1: Making Your Own Shell
+CIS*3110 W19 Operating Systems
+February 6th, 2019
+By: Greg Hetherington
+
+**************************************
+How to Run Program
+**************************************
+Step 1:  make
+
+Step 2:  ./ish
+
+**************************************
+Solution Strategy
+**************************************
+My main solution strategy was to mimic
+the behavior of the bash shell. I went
+through each type of command(with
+arguments, without arguments, etc) and
+implemented it, then compared its output
+to bash's. When I ran into difficulties
+I consulted to Bash and Linux user
+manuals.
+
+**************************************
+Assumptions
+**************************************
+I assumed that if a command worked in
+bash it should work in my shell. All
+of my custom commands do not work if
+tried to run in the background. If a
+'>' or '<' sign is in a command, I
+assume that there is only one argument
+following it.

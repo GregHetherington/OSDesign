@@ -83,7 +83,7 @@ int main() {
           wait(&status);
         }
       } else if (redirectLocation != NULL && inputRedirect != NULL) {
-        printf("Bad Command: use one of < or >\n");
+        fprintf(stderr, "usage: Bad command, use one of < or >\n");
       } else {
         executeCommand(commandArgs);
       }
@@ -243,7 +243,7 @@ void executeCommand(char** commandArgs) {
       }
       printf("GCD(%s, %s) = %ld\n", commandArgs[1], commandArgs[2], num1);
     } else {
-      printf("ERROR: Bad Arguments\n");
+      fprintf(stderr, "usage: gcd number number\n");
     }
   } else if (selectedCmd == 2) {
     int argCounter = 0;
@@ -279,7 +279,7 @@ void executeCommand(char** commandArgs) {
 
       printf("MULT(%s, %s) = %ld\n", commandArgs[1], commandArgs[2], ans);
     } else {
-      printf("ERROR: Bad Arguments\n");
+      fprintf(stderr, "usage: mult number number\n");
     }
   } else {
     pid = fork();

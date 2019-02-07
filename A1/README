@@ -14,6 +14,15 @@ Step 1:  make
 Step 2:  ./ish
 
 **************************************
+Custom Function
+**************************************
+Multiplies 2 decimal or hex values
+Example:
+  mult 2 5
+Example Output:
+  MULT(2, 5) = 10
+
+**************************************
 Solution Strategy
 **************************************
 My main solution strategy was to mimic

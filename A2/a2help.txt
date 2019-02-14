@@ -1,0 +1,98 @@
+Programming Asiignment 2 help
+
+1. You may refer to the following program design to complete the programming assignment 2.
+You'll need to Complete the main() function so that the program runs as required by adding missing pieces of code in your implementation.
+
+#include <fcntl.h> // open
+#include <unistd.h> // read
+#include <sys/types.h> // read
+#include <sys/uio.h> // read
+#include <stdio.h> // fopen, fread
+#include <stdlib.h>
+#include <sys/time.h> // gettimeofday
+
+struct timeval start, end; // maintain starting and finishing wall time.
+
+void startTimer( ) { // memorize the starting time
+        gettimeofday( &start, NULL );
+}
+
+void stopTimer( char *str ) { // checking the finishing time and computes the elapsed time
+        gettimeofday( &end, NULL );
+printf("%s's elapsed time\t= %ld\n",str, ( end.tv_sec - start.tv_sec ) * 1000000 + (end.tv_usec - start.tv_usec ));
+
+}
+
+int main( int argc, char *argv[] ) {
+
+int typeofcalls;
+// validate arguments
+// // implementation
+
+// Parsing the arguments passed to your C program
+// Including the number of bytes to read per read( ) or fread( ), and
+// the type of i/o calls used
+// implementation
+
+//
+if (typeofcalls == 1) {
+// Use unix I/O system calls to
+// implementation
+
+} else if (typeofcalls == 0) {
+// Use standard I/O
+// implementation
+}
+
+return 0;
+}
+
+2. After you finish your program, you can do the following tests to check if your program works correctly.
+
+For the testing purpose, you first need to create a file with a specific size,
+for example, using the truncate utility. As shown below, you can shrink or
+extend the size of a file named filename to 1M by using truncate.
+If the filename doesn't exist, it will be created
+
+truncate -s 1M filename
+
+Learn the syntax of the truncate utility using the man command
+man truncate
+
+- compile and test
+
+$gcc -o unixio unixio.c
+$./unixio filename 1024 1
+
+- batch test: create a bash shell script named t.sh with following content:
+
+#!/bin/bash
+buffersize=(1 256 512 1024 2048 2096)
+## Start testing
+for value in ${buffersize[*]}
+do
+## Testing Unix I/O system calls
+tcommando="./unixio filename $value 1"
+eval $tcommando
+## Testing C calls
+tcommando="./unixio filename $value 0"
+eval $tcommando
+done
+## Testing is done! :-)
+
+Note that you need to set up proper permissions on the above testing script before you execute the script, for example,
+chmod +x t.sh
+, which allows everyone to execute the script.
+
+Then, enter
+./t.sh
+
+Assume you have successfully executed your program and your program passes your tests, please record your execution output when reading a file by 1, 256, 512, 1024, 2048, and 2096 bytes and save your execution output into a file named a3output.txt by entering
+./t.sh>a2output.txt
+
+Also, you need to test the following abnormal situations to see whether your program is robust to handle these abnormal situations, including
+� Invalid number of arguments
+� A file argument that does not exist
+� Invalid number of bytes (or buffer size) to read per read( ) or fread( ), for example, negative number of bytes
+� The type of I/O calls entered is invalid
+
